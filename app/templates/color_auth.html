@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Level 3: Color Sequence Authentication{% endblock %}
+
+{% block content %}
+<div class="card p-4">
+    <h2 class="mb-3">Level 3: Select Your Color Sequence</h2>
+
+    <!-- Flash messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="alert alert-info">
+          <ul class="mb-0">
+            {% for category, message in messages %}
+              <li><strong>{{ category }}:</strong> {{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <!-- Form -->
+    <form method="POST">
+        <p class="mb-2">Click colors in the correct sequence (3 colors):</p>
+        
+        <div class="d-flex mb-3">
+            <div class="circle red" onclick="selectColor('R')"></div>
+            <div class="circle green" onclick="selectColor('G')"></div>
+            <div class="circle blue" onclick="selectColor('B')"></div>
+        </div>
+
+        <input type="hidden" name="color_sequence" id="color-sequence">
+        <p id="selected-sequence" class="fw-bold text-primary"></p>
+
+        <button type="submit" class="btn btn-success">Verify</button>
+    </form>
+</div>
+
+<script>
+    let selectedColors = [];
+
+    function selectColor(color) {
+        if (selectedColors.length < 3) {
+            selectedColors.push(color);
+            document.getElementById("color-sequence").value = selectedColors.join('');
+            document.getElementById("selected-sequence").textContent =
+                "Selected: " + selectedColors.join(" → ");
+        }
+    }
+</script>
+{% endblock %}

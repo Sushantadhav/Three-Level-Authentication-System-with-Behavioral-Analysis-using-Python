@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+
+{% block title %}Level 2: Image Authentication{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <div class="card shadow-lg rounded-3 p-4">
+    <h2 class="mb-4 text-center">Level 2: Click Your Secret Point</h2>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="alert alert-warning">
+          <ul class="mb-0">
+            {% for category, message in messages %}
+              <li><strong>{{ category }}:</strong> {{ message }}</li>
+            {% endfor %}
+          </ul>
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST">
+      <div class="text-center mb-3" id="image-container">
+        <img src="{{ url_for('static', filename=image_filename) }}" id="auth-image" class="img-fluid rounded border" style="width:400px; cursor:crosshair;">
+        <div id="click-marker"></div>
+      </div>
+
+      <input type="hidden" id="click_x" name="click_x">
+      <input type="hidden" id="click_y" name="click_y">
+      <p id="coords-display" class="text-success fw-bold text-center"></p>
+
+      <div class="d-grid">
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  #image-container {
+    position: relative;
+    display: inline-block;
+  }
+
+  #click-marker {
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    background-color: red;
+    border-radius: 50%;
+    pointer-events: none;
+    display: none;
+  }
+</style>
+
+<script>
+  const img = document.getElementById("auth-image");
+  const marker = document.getElementById("click-marker");
+  const coordsDisplay = document.getElementById("coords-display");
+
+  img.addEventListener("click", function(e) {
+    const rect = img.getBoundingClientRect();
+    const x = Math.round(e.clientX - rect.left);
+    const y = Math.round(e.clientY - rect.top);
+
+    document.getElementById("click_x").value = x;
+    document.getElementById("click_y").value = y;
+
+    marker.style.left = `${x - 6}px`;
+    marker.style.top = `${y - 6}px`;
+    marker.style.display = "block";
+
+    coordsDisplay.textContent = `🔒 You clicked at (${x}, ${y})`;
+  });
+</script>
+{% endblock %}

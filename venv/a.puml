@@ -1,0 +1,72 @@
+@startuml Three-Level Authentication System
+
+!define RECTANGLE class
+
+title Three-Level Authentication System - Use Case Diagram
+
+' Define actors
+actor User as user
+actor Admin as admin
+
+' Define the system boundary
+rectangle "Three-Level Authentication System" {
+    
+    ' Level 1 Authentication
+    usecase UC1 as "Login with Username & Password
+    (Level 1 Authentication)"
+    
+    ' Level 2 Authentication  
+    usecase UC2 as "Graphical Authentication
+    (Click Position)
+    (Level 2 Authentication)"
+    
+    ' Level 3 Authentication
+    usecase UC3 as "Color Sequence Verification
+    (Level 3 Authentication)"
+    
+    ' Final access
+    usecase UC4 as "Access Granted"
+    
+    ' Admin functionality
+    usecase UC5 as "View Behavior Logs"
+}
+
+' User interactions
+user --> UC1
+user --> UC2  
+user --> UC3
+user --> UC4
+
+' Admin interactions
+admin --> UC5
+
+' Sequential dependencies (extends/includes relationships)
+UC1 ..> UC2 : <<extends>>
+UC2 ..> UC3 : <<extends>>  
+UC3 ..> UC4 : <<extends>>
+
+' Notes for clarification
+note right of UC1
+  First level of authentication
+  Standard username/password
+end note
+
+note right of UC2
+  Second level requires
+  clicking specific positions
+  on graphical interface
+end note
+
+note right of UC3
+  Third level requires
+  correct color sequence
+  verification
+end note
+
+note bottom of UC5
+  Admin-only functionality
+  to monitor user behavior
+  and view system logs
+end note
+
+@enduml

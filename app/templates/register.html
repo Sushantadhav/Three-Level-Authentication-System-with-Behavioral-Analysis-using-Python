@@ -1,0 +1,84 @@
+{% extends "base.html" %}
+{% block title %}Register{% endblock %}
+
+{% block content %}
+<div class="form-section card p-4 mx-auto" style="max-width: 600px;">
+  <h2 class="text-center mb-4">Register</h2>
+
+  <form method="POST">
+    <!-- Username -->
+    <div class="mb-3">
+      <label class="form-label">Username:</label>
+      <input type="text" name="username" class="form-control" required>
+    </div>
+
+    <!-- Password -->
+    <div class="mb-3">
+      <label class="form-label">Password:</label>
+      <input type="password" name="password" class="form-control" required>
+    </div>
+
+    <!-- Image Click Authentication -->
+    <div class="mb-3 text-center">
+      <label class="form-label d-block">Click on Image:</label>
+      <div id="image-container" class="d-inline-block position-relative">
+        <img src="{{ url_for('static', filename='auth_image.jpg') }}" 
+             id="auth-image" 
+             class="auth-image">
+
+        <div id="click-marker" 
+             style="position:absolute; width:10px; height:10px; background:red; border-radius:50%; display:none;"></div>
+      </div>
+      <input type="hidden" id="click_x" name="click_x">
+      <input type="hidden" id="click_y" name="click_y">
+      <p id="coords-display" class="text-success mt-2"></p>
+    </div>
+
+    <!-- Level 3: Color Sequence -->
+    <div class="mb-3 text-center">
+      <label class="form-label"><strong>Level 3: Select Your Secret Color Sequence</strong></label><br>
+      <div id="color-buttons" class="d-flex justify-content-center gap-3">
+        <div class="circle red" onclick="selectColor('R')"></div>
+        <div class="circle green" onclick="selectColor('G')"></div>
+        <div class="circle blue" onclick="selectColor('B')"></div>
+      </div>
+      <input type="hidden" name="color_sequence" id="color-sequence">
+      <div id="sequence-output" class="fw-bold mt-2">Sequence: </div>
+    </div>
+
+    <!-- Submit -->
+    <button type="submit" class="btn btn-primary w-100">Register</button>
+  </form>
+</div>
+
+<script>
+  const img = document.getElementById("auth-image");
+  const marker = document.getElementById("click-marker");
+  const coordsDisplay = document.getElementById("coords-display");
+
+  img.addEventListener("click", function(e) {
+    const rect = img.getBoundingClientRect();
+    const x = Math.round(e.clientX - rect.left);
+    const y = Math.round(e.clientY - rect.top);
+
+    document.getElementById("click_x").value = x;
+    document.getElementById("click_y").value = y;
+
+    marker.style.left = `${x - 5}px`;
+    marker.style.top = `${y - 5}px`;
+    marker.style.display = "block";
+
+    coordsDisplay.textContent = `🔒 You clicked at (${x}, ${y})`;
+  });
+
+  let selectedColors = [];
+  function selectColor(color) {
+    if (selectedColors.length < 3) {
+      selectedColors.push(color);
+      document.getElementById('color-sequence').value = selectedColors.join('');
+      document.getElementById('sequence-output').innerText =
+        `Sequence: ${selectedColors.join(' → ')}`;
+    }
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,169 @@
+{% extends "base.html" %}
+{% block title %}Behavior Analytics Report{% endblock %}
+
+{% block content %}
+<div class="container">
+  <h2 class="mb-4 text-center">📊 Behavior Analytics Report</h2>
+
+  <!-- Login Success / Fail Graph -->
+  <div class="card mb-5 p-3 shadow-sm">
+    <h5 class="text-center">Login Attempts (Success vs Fail)</h5>
+    <canvas id="loginChart" height="300"></canvas>
+  </div>
+
+  <!-- Top IP Addresses -->
+  <div class="card mb-4 p-3 shadow-sm">
+    <h5>🌍 Top IP Addresses</h5>
+    <table class="table table-striped table-bordered">
+      <thead class="table-primary">
+        <tr>
+          <th>IP Address</th>
+          <th>Login Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ip, count in top_ips %}
+        <tr>
+          <td>{{ ip }}</td>
+          <td>{{ count }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="2">No data available</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Suspicious Behaviour Alert -->
+  <div class="card mb-4 p-3 shadow-sm border-danger">
+    <h5 class="text-danger">⚠️ Suspicious Behaviour (More than 5 failed attempts)</h5>
+    <table class="table table-bordered table-danger">
+      <thead>
+        <tr>
+          <th>IP Address</th>
+          <th>Failed Attempts</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for ip, count in suspicious_ips %}
+        <tr>
+          <td>{{ ip }}</td>
+          <td>{{ count }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="2">No suspicious activity detected</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Average Login Time -->
+  <div class="card mb-4 p-3 shadow-sm">
+    <h5>⏱ Average Login Time</h5>
+    <p class="fs-5 text-success">{{ avg_duration }} seconds</p>
+  </div>
+
+  <!-- Top Active Users -->
+  <div class="card mb-4 p-3 shadow-sm">
+    <h5>👥 Top Active Users (Most Successful Logins)</h5>
+    <table class="table table-striped table-bordered">
+      <thead class="table-success">
+        <tr>
+          <th>Username</th>
+          <th>Success Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user, count in top_users %}
+        <tr>
+          <td>{{ user }}</td>
+          <td>{{ count }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="2">No data</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Users with Most Failures -->
+  <div class="card mb-4 p-3 shadow-sm">
+    <h5 class="text-danger">🚫 Users with Most Failed Logins</h5>
+    <table class="table table-bordered table-danger">
+      <thead>
+        <tr>
+          <th>Username</th>
+          <th>Failed Count</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for user, count in failed_users %}
+        <tr>
+          <td>{{ user }}</td>
+          <td>{{ count }}</td>
+        </tr>
+        {% else %}
+        <tr>
+          <td colspan="2">No data</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Daily Login Trend -->
+  <div class="card mb-5 p-3 shadow-sm">
+    <h5 class="text-center">📈 Daily Login Trend</h5>
+    <canvas id="trendChart" height="300"></canvas>
+  </div>
+</div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  // Login Success vs Fail Chart
+  var ctx = document.getElementById('loginChart').getContext('2d');
+  new Chart(ctx, {
+      type: 'bar',
+      data: {
+          labels: ['Success', 'Fail'],
+          datasets: [{
+              label: 'Login Attempts',
+              data: [{{ success_count }}, {{ fail_count }}],
+              backgroundColor: ['green', 'red']
+          }]
+      }
+  });
+
+  // Daily Trend Line Chart
+  var ctx2 = document.getElementById('trendChart').getContext('2d');
+  new Chart(ctx2, {
+      type: 'line',
+      data: {
+          labels: {{ dates|tojson }},
+          datasets: [
+              {
+                  label: 'Success',
+                  data: {{ success_trend|tojson }},
+                  borderColor: 'green',
+                  fill: false,
+                  tension: 0.2
+              },
+              {
+                  label: 'Fail',
+                  data: {{ fail_trend|tojson }},
+                  borderColor: 'red',
+                  fill: false,
+                  tension: 0.2
+              }
+          ]
+      }
+  });
+</script>
+{% endblock %}

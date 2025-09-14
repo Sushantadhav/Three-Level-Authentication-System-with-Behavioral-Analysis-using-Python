@@ -1,0 +1,81 @@
+<!-- templates/level3_rgb.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="card shadow-lg rounded-4">
+                <div class="card-body text-center">
+                    <h2 class="mb-4">Level 3: Select Your Secret Color Sequence</h2>
+
+                    <!-- Flash messages -->
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                      {% if messages %}
+                        <div class="mb-3">
+                          {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                              {{ message }}
+                              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                          {% endfor %}
+                        </div>
+                      {% endif %}
+                    {% endwith %}
+
+                    <form method="POST">
+                        <div class="d-flex justify-content-center mb-4">
+                            <button type="button" class="color-button me-3" style="background: red;" onclick="selectColor('R')" aria-label="Red"></button>
+                            <button type="button" class="color-button me-3" style="background: green;" onclick="selectColor('G')" aria-label="Green"></button>
+                            <button type="button" class="color-button" style="background: blue;" onclick="selectColor('B')" aria-label="Blue"></button>
+                        </div>
+
+                        <div class="sequence-display mb-3 fw-bold" id="color-sequence">Sequence:</div>
+                        <input type="hidden" name="color_sequence" id="sequence-input">
+
+                        <div class="d-flex justify-content-center">
+                            <button type="submit" class="btn btn-primary me-2">Submit</button>
+                            <button type="button" class="btn btn-secondary" onclick="clearSequence()">Clear</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .color-button {
+        width: 80px;
+        height: 80px;
+        border: none;
+        border-radius: 50%;
+        cursor: pointer;
+        outline: none;
+    }
+    .sequence-display {
+        font-size: 18px;
+    }
+</style>
+
+<script>
+    let sequence = [];
+
+    function selectColor(color) {
+        if (sequence.length >= 3) return; // Max 3 colors
+        sequence.push(color);
+        document.getElementById("color-sequence").innerText = "Sequence: " + sequence.join(" → ");
+        updateHiddenInput();
+    }
+
+    function clearSequence() {
+        sequence = [];
+        document.getElementById("color-sequence").innerText = "Sequence:";
+        updateHiddenInput();
+    }
+
+    function updateHiddenInput() {
+        document.getElementById("sequence-input").value = sequence.join('');
+    }
+</script>
+{% endblock %}

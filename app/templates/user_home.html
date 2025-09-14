@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}User Home{% endblock %}
+
+{% block content %}
+<style>
+    /* Gradient background for the card */
+    .welcome-card {
+        background: linear-gradient(135deg, #e3fdfd, #cbf1f5, #a6e3e9);
+        border-radius: 20px;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .welcome-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Fade-in animation */
+    .fade-in {
+        animation: fadeInUp 1s ease;
+    }
+
+    @keyframes fadeInUp {
+        0% {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
+
+<div class="card p-5 text-center shadow-lg border-0 welcome-card fade-in">
+    <h2 class="fw-bold text-success mb-3">✅ Login Successful</h2>
+
+    <p class="mt-3 fs-5">
+        🎉 Congratulations, <strong>{{ user.username }}</strong>! <br>
+        You have successfully logged in.
+    </p>
+
+    <p class="text-muted fs-6 mt-4">
+        This project is very special to me as it’s my <strong>first major step</strong> into development.  
+        I truly hope you find it useful and enjoyable.  
+    </p>
+
+    <p class="text-secondary fst-italic">
+        Your feedback and suggestions are always welcome 🙏  
+        Thank you for being part of this journey 💙
+    </p>
+
+    <a href="{{ url_for('auth.login') }}" class="btn btn-danger btn-lg mt-4">
+        🚪 Logout
+    </a>
+</div>
+{% endblock %}
