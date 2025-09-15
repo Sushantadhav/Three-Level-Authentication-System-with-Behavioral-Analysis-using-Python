@@ -2,7 +2,7 @@ from app import create_app, db
 import os
 
 app = create_app()
-app.secret_key = os.environ.get("SECRET_KEY", "change_this_dev_key")
+app.secret_key = os.environ.get("SECRET_KEY", "supersecret")
 
 with app.app_context():
     # Automatically creates tables if they don’t exist
