@@ -1,3 +1,9 @@
+# --- build tools (Render needs these first) ---
+pip>=25.2
+setuptools>=70
+wheel
+
+# --- Web framework ---
 Flask==3.0.3
 Flask-Login==0.6.3
 Flask-SQLAlchemy==3.1.1
@@ -9,11 +15,11 @@ WTForms==3.1.2
 email-validator==2.2.0
 bcrypt==4.1.2
 
-# Analytics / Data
+# --- Analytics / Data ---
 numpy==1.26.4
-pandas==2.2.2
+pandas==2.2.3
 matplotlib==3.8.4
 Faker==25.8.0
 
-# Deployment
+# --- Deployment ---
 gunicorn==23.0.0
