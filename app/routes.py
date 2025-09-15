@@ -9,7 +9,7 @@ from io import StringIO
 import pandas as pd
 import random
 from datetime import datetime, timedelta
-
+import re
 auth_bp = Blueprint('auth', __name__)
 from functools import wraps
 
@@ -81,22 +81,33 @@ def register():
         color_sequence = request.form.get('color_sequence')
         image_filename = 'auth_image.jpg'
 
+        # Check if username and password are provided
         if not username or not password:
             flash("Username and Password are required.", "danger")
             return render_template("register.html")
+        
+        # Password validation (minimum 8 chars, 1 uppercase, 1 number, 1 special char)
+        password_pattern = r'^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$'
+        if not re.match(password_pattern, password):
+            flash("Password must be at least 8 characters long, include 1 uppercase letter, 1 number, and 1 special character.", "danger")
+            return render_template("register.html")
 
+        # Check click coordinates
         if not click_x or not click_y:
             flash("Please click on the image for Level 2.", "danger")
             return render_template("register.html")
 
+        # Check color sequence
         if not color_sequence or len(color_sequence) != 3:
             flash("Please select a valid 3-color sequence.", "danger")
             return render_template("register.html")
 
+        # Check if username already exists
         if User.query.filter_by(username=username).first():
             flash("Username already exists.", "danger")
             return render_template("register.html")
 
+        # Hash password and create user
         hashed = hash_password(password)
         new_user = User(
             username=username,
