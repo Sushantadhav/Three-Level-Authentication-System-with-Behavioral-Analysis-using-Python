@@ -1,6 +1,6 @@
-# --- build tools (Render needs these first) ---
-pip>=25.2
-setuptools>=70
+# --- Build tools (for Render) ---
+pip
+setuptools
 wheel
 
 # --- Web framework ---
